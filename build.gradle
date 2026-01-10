@@ -128,7 +128,7 @@ jacocoTestReport {
 
 sonar {
     properties {
-        property "sonar.projectKey", "recordrobotics_SwerveDriveBase"
+        property "sonar.projectKey", "recordrobotics-swerve-drive-base"
         property "sonar.organization", "recordrobotics"
     }
 }
