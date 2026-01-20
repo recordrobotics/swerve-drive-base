@@ -19,15 +19,12 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.*;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.RobotBase;
-import frc.robot.utils.AutoLogLevel;
 import frc.robot.utils.DriverStationUtils;
 import frc.robot.utils.ModuleConstants;
 import frc.robot.utils.ModuleConstants.DriveMotorType;
 import frc.robot.utils.ModuleConstants.InvalidConfigException;
 import frc.robot.utils.ModuleConstants.MotorLocation;
 import frc.robot.utils.ModuleConstants.TurnMotorType;
-import frc.robot.utils.SysIdManager;
-import frc.robot.utils.SysIdManager.SysIdRoutine;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -218,8 +215,6 @@ public final class Constants {
 
         public static final boolean MOTOR_LOGGING_ENABLED = false;
 
-        public static final AutoLogLevel.Level AUTO_LOG_LEVEL = getAutoLogLevel();
-
         /**
          * <p>
          * Enable NT and Advantage Scope for unit tests.
@@ -247,16 +242,6 @@ public final class Constants {
             if (RobotBase.isReal()) return Mode.REAL;
             if (runningAsUnitTest) return Mode.TEST;
             return RobotBase.isSimulation() ? Mode.SIM : Mode.REPLAY;
-        }
-
-        private static AutoLogLevel.Level getAutoLogLevel() {
-            if (RobotBase.isReal()) {
-                return SysIdManager.getSysIdRoutine() != SysIdRoutine.NONE
-                        ? AutoLogLevel.Level.SYSID
-                        : AutoLogLevel.Level.REAL;
-            } else {
-                return AutoLogLevel.Level.SIM;
-            }
         }
 
         public enum Mode {

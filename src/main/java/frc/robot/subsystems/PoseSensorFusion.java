@@ -14,8 +14,6 @@ import frc.robot.RobotContainer;
 import frc.robot.dashboard.DashboardUI;
 import frc.robot.subsystems.io.real.NavSensorReal;
 import frc.robot.subsystems.io.sim.NavSensorSim;
-import frc.robot.utils.AutoLogLevel;
-import frc.robot.utils.AutoLogLevel.Level;
 import frc.robot.utils.DriverStationUtils;
 import java.util.Optional;
 
@@ -121,7 +119,6 @@ public class PoseSensorFusion extends SubsystemBase {
         return RobotContainer.drivetrain.getModulePositions();
     }
 
-    @AutoLogLevel(key = "Odometry/Robot", level = Level.REAL)
     public Pose2d getEstimatedPosition() {
         return poseFilter.getEstimatedPosition();
     }

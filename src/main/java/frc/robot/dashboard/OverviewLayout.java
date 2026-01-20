@@ -9,9 +9,7 @@ import frc.robot.Constants;
 import frc.robot.Constants.FieldStartingLocation;
 import frc.robot.control.AbstractControl;
 import frc.robot.utils.libraries.Elastic;
-import java.util.EnumSet;
 import java.util.function.Supplier;
-import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 public final class OverviewLayout extends AbstractLayout {
 
@@ -29,11 +27,6 @@ public final class OverviewLayout extends AbstractLayout {
 
     private final Field2d field = new Field2d();
 
-    private LoggedDashboardChooser<DriverOrientation> driverOrientation =
-            new LoggedDashboardChooser<>("Driver Orientation");
-    private LoggedDashboardChooser<AbstractControl> driveMode = new LoggedDashboardChooser<>("Drive Mode");
-    private LoggedDashboardChooser<FieldStartingLocation> fieldStartingLocationChooser =
-            new LoggedDashboardChooser<>("Starting Location");
     private AbstractControl defaultControl;
     private AbstractControl testControl;
 
@@ -42,11 +35,6 @@ public final class OverviewLayout extends AbstractLayout {
     public OverviewLayout() {
         buildSendable("Field", field);
         addValueSendable("Nav Sensor", () -> navSensorValue.get(), "boolean");
-
-        EnumSet.allOf(FieldStartingLocation.class)
-                .forEach(v -> fieldStartingLocationChooser.addOption(v.toString(), v));
-        fieldStartingLocationChooser.addDefaultOption(
-                FieldStartingLocation.DEFAULT.toString(), FieldStartingLocation.DEFAULT);
 
         SmartDashboard.putBoolean("Overview/ResetLocationButton", false);
         SmartDashboard.putBoolean("Overview/EncoderReset", false);
@@ -60,16 +48,6 @@ public final class OverviewLayout extends AbstractLayout {
      */
     public void addControls(AbstractControl defaultControl, AbstractControl... controls) {
         this.defaultControl = defaultControl;
-
-        // Sets up drive mode options
-        for (AbstractControl abstractControl : controls) {
-            driveMode.addOption(abstractControl.getClass().getSimpleName(), abstractControl);
-        }
-        driveMode.addDefaultOption(defaultControl.getClass().getSimpleName(), defaultControl);
-
-        EnumSet.allOf(DriverOrientation.class).forEach(v -> driverOrientation.addOption(v.displayName, v));
-        driverOrientation.addDefaultOption(
-                DriverOrientation.X_AXIS_TOWARDS_TRIGGER.displayName, DriverOrientation.X_AXIS_TOWARDS_TRIGGER);
     }
 
     public void setNavSensor(Supplier<Boolean> navSensor) {
@@ -87,7 +65,7 @@ public final class OverviewLayout extends AbstractLayout {
     }
 
     public DriverOrientation getDriverOrientation() {
-        return driverOrientation.get();
+        return DriverOrientation.X_AXIS_INVERTED_TOWARDS_TRIGGER;
     }
 
     public void setTestControl(AbstractControl testControl) {
@@ -103,8 +81,7 @@ public final class OverviewLayout extends AbstractLayout {
             return testControl;
         }
 
-        if (driveMode.get() == null) return defaultControl;
-        return driveMode.get();
+        return defaultControl;
     }
 
     public void setRobotPose(Pose2d pose) {
@@ -116,9 +93,7 @@ public final class OverviewLayout extends AbstractLayout {
     }
 
     public FieldStartingLocation getStartingLocation() {
-        return fieldStartingLocationChooser.get() == null
-                ? FieldStartingLocation.DEFAULT
-                : fieldStartingLocationChooser.get();
+        return FieldStartingLocation.DEFAULT;
     }
 
     public boolean isResetLocationPressed() {

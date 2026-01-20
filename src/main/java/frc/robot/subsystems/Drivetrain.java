@@ -27,8 +27,6 @@ import frc.robot.dashboard.DashboardUI;
 import frc.robot.subsystems.io.SwerveModuleIO;
 import frc.robot.subsystems.io.real.SwerveModuleReal;
 import frc.robot.subsystems.io.sim.SwerveModuleSim;
-import frc.robot.utils.AutoLogLevel;
-import frc.robot.utils.AutoLogLevel.Level;
 import frc.robot.utils.ModuleConstants;
 import frc.robot.utils.ModuleConstants.InvalidConfigException;
 import frc.robot.utils.SimpleMath;
@@ -40,7 +38,6 @@ import org.ironmaple.simulation.drivesims.GyroSimulation;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import org.ironmaple.simulation.drivesims.configs.DriveTrainSimulationConfig;
 import org.ironmaple.simulation.drivesims.configs.SwerveModuleSimulationConfig;
-import org.littletonrobotics.junction.Logger;
 
 /** Represents a swerve drive style drivetrain. */
 public final class Drivetrain extends SubsystemBase implements AutoCloseable {
@@ -171,26 +168,16 @@ public final class Drivetrain extends SubsystemBase implements AutoCloseable {
 
         sysIdRoutineDriveMotorsSpin = new SysIdRoutine(
                 new SysIdRoutine.Config(
-                        SYSID_DRIVE_RAMP_RATE,
-                        SYSID_DRIVE_STEP_VOLTAGE,
-                        SYSID_DRIVE_TIMEOUT,
-                        state -> Logger.recordOutput("Drivetrain/Drive/SysIdTestState", state.toString())),
+                        SYSID_DRIVE_RAMP_RATE, SYSID_DRIVE_STEP_VOLTAGE, SYSID_DRIVE_TIMEOUT, state -> {}),
                 new SysIdRoutine.Mechanism(this::sysIdOnlyDriveMotorsSpin, null, this));
 
         sysIdRoutineDriveMotorsForward = new SysIdRoutine(
                 new SysIdRoutine.Config(
-                        SYSID_DRIVE_RAMP_RATE,
-                        SYSID_DRIVE_STEP_VOLTAGE,
-                        SYSID_DRIVE_TIMEOUT,
-                        state -> Logger.recordOutput("Drivetrain/Drive/SysIdTestState", state.toString())),
+                        SYSID_DRIVE_RAMP_RATE, SYSID_DRIVE_STEP_VOLTAGE, SYSID_DRIVE_TIMEOUT, state -> {}),
                 new SysIdRoutine.Mechanism(this::sysIdOnlyDriveMotorsForward, null, this));
 
         sysIdRoutineTurnMotors = new SysIdRoutine(
-                new SysIdRoutine.Config(
-                        SYSID_TURN_RAMP_RATE,
-                        SYSID_TURN_STEP_VOLTAGE,
-                        SYSID_TURN_TIMEOUT,
-                        state -> Logger.recordOutput("Drivetrain/Turn/SysIdTestState", state.toString())),
+                new SysIdRoutine.Config(SYSID_TURN_RAMP_RATE, SYSID_TURN_STEP_VOLTAGE, SYSID_TURN_TIMEOUT, state -> {}),
                 new SysIdRoutine.Mechanism(this::sysIdOnlyTurnMotors, null, this));
     }
 
@@ -295,7 +282,6 @@ public final class Drivetrain extends SubsystemBase implements AutoCloseable {
         backRight.setDriveMotorVoltsSysIdOnly(volts.in(Volts));
     }
 
-    @AutoLogLevel(level = Level.SYSID)
     public double sysIdOnlyGetDriveMotorVolts() {
         return SimpleMath.average4(
                 frontLeft.getDriveMotorVoltsSysIdOnly(),
@@ -304,7 +290,6 @@ public final class Drivetrain extends SubsystemBase implements AutoCloseable {
                 backRight.getDriveMotorVoltsSysIdOnly());
     }
 
-    @AutoLogLevel(level = Level.SYSID)
     public double sysIdOnlyGetDriveMotorPosition() {
         return SimpleMath.average4(
                 frontLeft.getDriveWheelDistance(),
@@ -313,7 +298,6 @@ public final class Drivetrain extends SubsystemBase implements AutoCloseable {
                 backRight.getDriveWheelDistance());
     }
 
-    @AutoLogLevel(level = Level.SYSID)
     public double sysIdOnlyGetDriveMotorVelocity() {
         return SimpleMath.average4(
                 frontLeft.getDriveWheelVelocity(),
@@ -329,7 +313,6 @@ public final class Drivetrain extends SubsystemBase implements AutoCloseable {
         backRight.setTurnMotorVoltsSysIdOnly(volts.in(Volts));
     }
 
-    @AutoLogLevel(level = Level.SYSID)
     public double sysIdOnlyGetTurnMotorVolts() {
         return SimpleMath.average4(
                 frontLeft.getTurnMotorVoltsSysIdOnly(),
@@ -338,7 +321,6 @@ public final class Drivetrain extends SubsystemBase implements AutoCloseable {
                 backRight.getTurnMotorVoltsSysIdOnly());
     }
 
-    @AutoLogLevel(level = Level.SYSID)
     public double sysIdOnlyGetTurnMotorPosition() {
         return SimpleMath.average4(
                 frontLeft.getTurnWheelRotation2d().getRotations(),
@@ -347,7 +329,6 @@ public final class Drivetrain extends SubsystemBase implements AutoCloseable {
                 backRight.getTurnWheelRotation2d().getRotations());
     }
 
-    @AutoLogLevel(level = Level.SYSID)
     public double sysIdOnlyGetTurnMotorVelocity() {
         return SimpleMath.average4(
                 frontLeft.getTurnWheelVelocity(),
@@ -364,7 +345,6 @@ public final class Drivetrain extends SubsystemBase implements AutoCloseable {
      *
      * @return The current relative chassis speeds as a ChassisSpeeds object.
      */
-    @AutoLogLevel(level = Level.REAL)
     public ChassisSpeeds getChassisSpeeds() {
         return kinematics.toChassisSpeeds(
                 frontLeft.getModuleState(),
@@ -381,7 +361,6 @@ public final class Drivetrain extends SubsystemBase implements AutoCloseable {
      *
      * @return The current relative chassis acceleration as a ChassisSpeeds object.
      */
-    @AutoLogLevel(level = Level.REAL)
     public ChassisSpeeds getChassisAcceleration() {
         return kinematics.toChassisSpeeds(
                 frontLeft.getModuleStateAcceleration(),
@@ -390,7 +369,6 @@ public final class Drivetrain extends SubsystemBase implements AutoCloseable {
                 backRight.getModuleStateAcceleration());
     }
 
-    @AutoLogLevel(level = Level.REAL)
     public int getModifiersAppliedCount() {
         return lastModifiersAppliedCount;
     }
@@ -413,7 +391,6 @@ public final class Drivetrain extends SubsystemBase implements AutoCloseable {
         };
     }
 
-    @AutoLogLevel(level = Level.REAL)
     public SwerveModuleState[] getModuleStates() {
         return new SwerveModuleState[] {
             frontLeft.getModuleState(),
@@ -423,7 +400,6 @@ public final class Drivetrain extends SubsystemBase implements AutoCloseable {
         };
     }
 
-    @AutoLogLevel(level = Level.REAL)
     public SwerveModuleState[] getModuleSetpoints() {
         return lastModuleSetpoints;
     }

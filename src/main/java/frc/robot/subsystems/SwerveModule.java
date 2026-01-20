@@ -17,12 +17,10 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.subsystems.io.SwerveModuleIO;
-import frc.robot.utils.AutoLogLevel.Level;
 import frc.robot.utils.ModuleConstants;
 import frc.robot.utils.SimpleMath;
 import frc.robot.utils.SysIdManager;
 import frc.robot.utils.SysIdManager.SysIdRoutine;
-import org.littletonrobotics.junction.Logger;
 
 public final class SwerveModule implements AutoCloseable {
 
@@ -246,10 +244,6 @@ public final class SwerveModule implements AutoCloseable {
         driveAccelerationCached = io.getDriveMechanismAcceleration();
         turnPositionCached = io.getTurnMechanismPosition();
         turnVelocityCached = io.getTurnMechanismVelocity();
-        if (Constants.RobotState.AUTO_LOG_LEVEL.isAtOrLowerThan(Level.SYSID)) {
-            driveVoltageCached = io.getDriveMotorVoltage();
-            turnVoltageCached = io.getTurnMotorVoltage();
-        }
 
         if (Math.abs(driveVelocityCached) > STATIONARY_DRIVE_VELOCITY_THRESHOLD
                 || Math.abs(turnVelocityCached) > STATIONARY_TURN_VELOCITY_THRESHOLD) {
@@ -268,10 +262,6 @@ public final class SwerveModule implements AutoCloseable {
                         - getTurnWheelRotation2d().getRadians());
 
         io.setDriveMotorMotionMagic(driveRequest.withVelocity(actualTargetDriveVelocity));
-
-        // TODO: remove after drivetrain tuning
-        Logger.recordOutput("Swerve/" + encoderChannel + "/Current", getDriveWheelVelocity());
-        Logger.recordOutput("Swerve/" + encoderChannel + "/Target", actualTargetDriveVelocity);
 
         SmartDashboard.putNumber("Encoder " + encoderChannel, io.getAbsoluteEncoder());
 
